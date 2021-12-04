@@ -3,7 +3,13 @@ import Button from '../Components/Button'
 import Carousel from '../Components/Carousel'
 import Modal from '../Components/Modal'
 import { ReactComponent as FormBg } from '../Images/Backgr_Form.svg'
-const HomeScreen = () => {
+import { useNavigate } from 'react-router-dom';
+
+import axios from 'axios';
+require('dotenv').config()
+
+
+const HomeScreen = (login_active, register_active) => {
 
     const [Name, setName] = useState("");
     const [Email, setEmail] = useState("");
@@ -12,11 +18,39 @@ const HomeScreen = () => {
     const [LoginModalActive, setLoginModalActive] = useState(false);
     const [RegisterModalActive, setRegisterModalActive] = useState(false);
 
-    const handleSubmit = () => {
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let body = {
+            name: Name,
+            email: Email,
+            message: Message,
+        };
+
+        let config = {
+            method: 'post',
+            url: 'https://proba2021.lsacbucuresti.ro/contact-requests',
+            headers: {
+                'Content-Type': 'application/json',
+                'boboc-token': '2a4abe7b-ce0a-4e60-a023-5f6194bc36fc'
+            },
+            data: body,
+        };
+
+        console.log(config);
+        axios(config)
+            .then(function (response) {
+                console.log(response)
+                navigate('/')
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     };
 
     return (
-        <div className="grid grid-cols-1 ">
+        <div className="grid grid-cols-1 " >
             <div className=" flex flex-col sm:flex-row h-screen justify-center items-center">
                 <div className="m-auto">
                     <div className=" flex flex-col items-center gap-y-3">
@@ -63,14 +97,15 @@ const HomeScreen = () => {
                                 <Button text="Predau"
                                     btn_type="bg-gradient-to-b from-gradient1 to-gradient2 text-center w-1/2"
                                     text_style="py-2"
-                                    onClick={setRegisterModalActive(!RegisterModalActive)} />
+                                    func={() => setRegisterModalActive(!RegisterModalActive)} />
 
                             </div>
                             <div className="content-center flex justify-center">
                                 <Button text="Învăț"
                                     btn_type="bg-gradient-to-b from-gradient1 to-gradient2 text-center w-1/2"
                                     text_style="py-2"
-                                    onClick={setLoginModalActive(!LoginModalActive)} />
+                                    func={() => setRegisterModalActive(!RegisterModalActive)}
+                                />
                             </div>
                         </div>
                     </div>
@@ -83,7 +118,7 @@ const HomeScreen = () => {
             </div>
             {/* Feedback form */}
             <div className="flex justify-center items-center h-screen relative mx-10 my-10">
-                <FormBg className="absolute z-0 h-full w-full"></FormBg>
+                <FormBg id="Contact" className="absolute z-0 h-full w-full"></FormBg>
                 <div className="z-10">
                     <p className="text-center text-4xl md:text-5xl">
                         Întâmpini dificultăți ? <br />
@@ -140,11 +175,18 @@ const HomeScreen = () => {
                 </div>
             </div>
 
-            <Modal>
+            {/* MODALS */}
+            <Modal title="Register"
+                show={RegisterModalActive}
+                func={() => { setRegisterModalActive(!RegisterModalActive) }} />
 
-            </Modal>
+            <Modal title="Login"
+                show={LoginModalActive}
+                func={() => { setLoginModalActive(!LoginModalActive) }} />
 
-        </div>
+
+
+        </div >
     );
 
 };

@@ -10,12 +10,12 @@ const IN_SVG = () => {
             <path d="M29.9426 36.1949H19.0311C14.5007 36.1949 10.8157 32.5863 10.8157 28.1498V17.4647C10.8157 13.0282 14.5007 9.41968 19.0311 9.41968H29.9426C34.4731 9.41968 38.1581 13.0282 38.1581 17.4647V28.1498C38.1581 32.5863 34.4731 36.1949 29.9426 36.1949ZM19.0152 11.9347C15.9045 11.9347 13.3681 14.4185 13.3681 17.4647V28.1498C13.3681 31.196 15.9045 33.6798 19.0152 33.6798H29.9266C33.0373 33.6798 35.5738 31.196 35.5738 28.1498V17.4647C35.5738 14.4185 33.0373 11.9347 29.9266 11.9347H19.0152Z" fill="white" />
             <defs>
                 <radialGradient id="paint0_radial_71_75" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(33.5 36.19) scale(33.5 32.8051)">
-                    <stop stop-color="#000056" />
-                    <stop offset="0.2482" stop-color="#4C4C88" stop-opacity="0.7518" />
-                    <stop offset="0.5193" stop-color="#9898BB" stop-opacity="0.4807" />
-                    <stop offset="0.744" stop-color="#D0D0E0" stop-opacity="0.256" />
-                    <stop offset="0.9103" stop-color="#F2F2F6" stop-opacity="0.0897" />
-                    <stop offset="1" stop-color="white" stop-opacity="0" />
+                    <stop stopColor="#000056" />
+                    <stop offset="0.2482" stopColor="#4C4C88" stopOpacity="0.7518" />
+                    <stop offset="0.5193" stopColor="#9898BB" stopOpacity="0.4807" />
+                    <stop offset="0.744" stopColor="#D0D0E0" stopOpacity="0.256" />
+                    <stop offset="0.9103" stopColor="#F2F2F6" stopOpacity="0.0897" />
+                    <stop offset="1" stopColor="white" stopOpacity="0" />
                 </radialGradient>
             </defs>
         </svg>

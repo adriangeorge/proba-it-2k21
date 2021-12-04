@@ -1,180 +1,192 @@
-import React from 'react';
+import { React, useState } from 'react';
 //import JWT from 'jsonwebtoken';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const ModalCard = ({ title, color, cb, type_mod }) => {
+const ModalCard = ({ title, color, callback, type_mod, show, func }) => {
     const navigate = useNavigate();
 
-    const [showModal, setShowModal] = React.useState(false);
-    const [awardedPoints, setAwardedPts] = React.useState(0);
-    const [rewardtitle, setRewardTitle] = React.useState('');
-    const [description, setDescription] = React.useState('');
+    const [showModal, setShowModal] = useState(show);
+    const [awardedPoints, setAwardedPts] = useState(0);
+    const [rewardtitle, setRewardTitle] = useState('');
+    const [description, setDescription] = useState('');
 
-    const token = JSON.parse(localStorage.getItem('token'))['token'];
-    //let user = JWT.verify(token, process.env.REACT_APP_JWT_SECRET).user;
+    const [loggedIn, setloggedIn] = useState(false);
 
-    const handleSubmit = async (e) => {
+    // FORM DATA 
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('student');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleSubmit = (e) => {
         e.preventDefault();
+        let type = title === "Register" ? "/auth/register" : "/auth/login";
 
-        // switch (type_mod) {
-        //     case 'Reward': {
+        let body = {
+            email: email,
+            password: password,
+        };
 
-        //         let data;
+        if (title === "Register") {
+            body = {
+                ...body,
+                firstname: firstName,
+                lastname: lastName,
+                role: role,
+                confirmation_password: confirmPassword
+            }
+        }
 
-        //         if (user.role === 'parent') {
-        //             if (user.children[0])
-        //                 data = JSON.stringify({
-        //                     usernameParent: user.username,
-        //                     usernameChild: user.children[0].username,
-        //                     name: rewardtitle,
-        //                     cost: awardedPoints,
-        //                 });
-        //         }
+        let config = {
+            method: 'post',
+            url: 'https://proba2021.lsacbucuresti.ro' + type,
+            headers: {
+                'Content-Type': 'application/json',
+                'boboc-token': '2a4abe7b-ce0a-4e60-a023-5f6194bc36fc'
+            },
+            data: body,
+        };
 
-        //         var config = {
-        //             method: 'post',
-        //             url: 'http://localhost:5000/user/addReward',
-        //             headers: {
-        //                 'Authorization': `Bearer ${token}`,
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             data: data
-        //         };
+        axios(config)
+            .then(function (response) {
 
-        //         axios(config)
-        //             .then(function (response) {
-        //                 console.log(JSON.stringify(response.data));
-        //                 window.location.reload();
-        //             }).catch(function (error) {
-        //                 console.log(error);
-        //             });
+                if (type === "Register") {
+                    let token = JSON.stringify(response.data);
+                    localStorage.setItem('token', token);
+                    setloggedIn(true);
+                }
 
-        //     } break;
+                navigate('/dashboard')
 
-        //     case 'Activity': {
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    };
 
-        //     } break;
+    const handleChangeRole = () => {
 
-        //     case 'Food': {
-
-        //     } break;
-        // }
     }
 
     return (
         <>
-            <div
-                className={`grid grid-cols-3 py-6 my-4 mx-2 rounded-xl divide-x-2 bg-${color} h-100`}
-                onClick={() => setShowModal(true)}
-            >
-                <div className="col-span-2 grid grid-cols-1 gap-3 py-2 test-center">
-                    <div className="text-center text-white text-xl font-bold">{title}</div>
-                </div>
-                <div className="grid grid-cols-1 text-white py-2 justify-items-center ">
-                    <div className="flex " />
-                    <div className="flex ">
-                        MODAL BUTTON
-                    </div>
-                    <div className="flex " />
-                </div>
-            </div>
-            {showModal ? (
+            {show ? (
                 <>
                     <div
                         className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
                     >
-                        <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                        <div className="relative w-3/4 my-6 mx-auto bg-primary rounded-3xl">
                             {/*content*/}
-                            <form className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-darkPurple outline-white focus:outline-none"
-                                onSubmit={(e) => { e.preventDefault(); cb(awardedPoints, rewardtitle, description) }}
+
+                            <form className="border-0 shadow-lg relative flex flex-col w-full "
+                                onSubmit={(e) => { e.preventDefault(); callback(awardedPoints, rewardtitle, description) }}
                             >
                                 {/*header*/}
-                                <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                                    <h3 className="text-3xl font-semibold text-white">
-                                        New {type_mod}
-                                    </h3>
+                                <div className="flex justify-center p-5 rounded-t">
+                                    <p className="text-3xl font-semibold text-white">
+                                        {title}
+                                    </p>
                                 </div>
+                                <button
+                                    className="text-white background-transparent font-bold uppercase px-6 py-2 text-md top-0 right-0 absolute"
+                                    type="button"
+                                    onClick={func}
+                                >
+                                    X
+                                </button>
                                 {/*body*/}
                                 <div className="relative p-6 flex-auto">
                                     {/* CONTENT HERE */}
+
+                                    {title === 'Register' ?
+                                        (<>
+                                            <div className="flex justify-end py-3 gap-1">
+                                                <div>
+                                                    <select
+                                                        onChange={handleChangeRole}
+                                                        className="text-black bg-form_bg rounded-lg bg-sel_arrow bg-no-repeat bg-right pl-1 pr-4 bg-small bg-origin-padding appearance-none outline-none"
+                                                        name=""
+                                                        id=""
+                                                    >
+                                                        <option value="student">Student</option>
+                                                        <option value="teacher">Profesor</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col py-3 gap-1">
+                                                <label htmlFor="nume" className="text-white text-xl">
+                                                    Nume:
+                                                </label>
+                                                <input
+                                                    onChange={(e) => setFirstName(e.target.value)}
+                                                    type="text"
+                                                    className="text-black bg-form_bg "
+                                                />
+                                            </div>
+
+                                            <div className="flex flex-col py-3 gap-1">
+                                                <label htmlFor="prenume" className="text-white text-xl">
+                                                    Prenume:
+                                                </label>
+                                                <input
+                                                    onChange={(e) => setLastName(e.target.value)}
+                                                    type="text"
+                                                    className="text-black bg-form_bg"
+                                                />
+                                            </div>
+                                        </>) : null
+                                    }
+
+
                                     <div className="flex flex-col py-3 gap-1">
-                                        <label htmlFor="username" className="text-white text-xl py-2">
-                                            Title
+                                        <label htmlFor="email" className="text-white text-xl">
+                                            Email
                                         </label>
                                         <input
+                                            onChange={(e) => setEmail(e.target.value)}
                                             type="text"
-                                            className="text-white bg-transparent border-b text-xl"
-                                            onChange={(e) => setRewardTitle(e.target.value)}
+                                            className="text-black bg-form_bg"
                                         />
-                                        <label htmlFor="username" className="text-white text-xl py-2">
-                                            Description
+                                    </div>
+
+
+                                    <div className="flex flex-col py-3 gap-1">
+                                        <label htmlFor="password" className="text-white text-xl">
+                                            Parola:
                                         </label>
                                         <input
-                                            type="text"
-                                            className="text-white bg-transparent border-b text-xl"
-                                            onChange={(e) => setDescription(e.target.value)}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            type="password"
+                                            className="text-black bg-form_bg "
                                         />
                                     </div>
-                                    <div className="flex flex-col py-3 gap-1">
-                                        <label htmlFor="username" className="text-white text-xl py-2">
-                                            Points
-                                        </label>
-                                        <div className="flex items-center justify-center mb-4">
-                                            <button
-                                                className="text-purple-500 bg-transparent border-l border-t border-b border-purple-500 hover:bg-purple-500 hover:text-white active:bg-purple-600 font-bold uppercase text-xs px-4 py-2 rounded-l outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setAwardedPts(5)}>
-                                                5
-                                            </button>
-                                            <button
-                                                className="text-purple-500 bg-transparent border border-solid border-purple-500 hover:bg-purple-500 hover:text-white active:bg-purple-600 font-bold uppercase text-xs px-4 py-2 outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setAwardedPts(10)}>
-                                                10
-                                            </button>
-                                            <button
-                                                className="text-purple-500 bg-transparent border-t border-b border-r border-purple-500 hover:bg-purple-500 hover:text-white active:bg-purple-600 font-bold uppercase text-xs px-4 py-2 rounded-r outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setAwardedPts(15)}>
-                                                15
-                                            </button>
-                                            <button
-                                                className="text-purple-500 bg-transparent border-t border-b border-r border-purple-500 hover:bg-purple-500 hover:text-white active:bg-purple-600 font-bold uppercase text-xs px-4 py-2 rounded-r outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setAwardedPts(20)}>
-                                                20
-                                            </button>
-                                            <button
-                                                className="text-purple-500 bg-transparent border-t border-b border-r border-purple-500 hover:bg-purple-500 hover:text-white active:bg-purple-600 font-bold uppercase text-xs px-4 py-2 rounded-r outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setAwardedPts(25)}>
-                                                25
-                                            </button>
-                                            <button
-                                                className="text-purple-500 bg-transparent border-t border-b border-r border-purple-500 hover:bg-purple-500 hover:text-white active:bg-purple-600 font-bold uppercase text-xs px-4 py-2 rounded-r outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setAwardedPts(30)}>
-                                                30
-                                            </button>
-                                        </div>
-                                    </div>
+
+                                    {title === 'Register' ?
+                                        (<>
+                                            <div className="flex flex-col py-3 gap-1">
+                                                <label htmlFor="confirm" className="text-white text-xl">
+                                                    Confirmare Parola:
+                                                </label>
+                                                <input
+                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                    type="password"
+                                                    className="text-black bg-form_bg"
+                                                />
+                                            </div>
+                                        </>) : null}
                                 </div>
                                 {/*footer*/}
-                                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                                <div className="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">
+
                                     <button
-                                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                        type="button"
-                                        onClick={() => setShowModal(false)}
-                                    >
-                                        Close
-                                    </button>
-                                    <button
-                                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        className="bg-gradient-to-b from-gradient1 to-gradient2 rounded-2xl text-black active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3  shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="submit"
                                         onClick={(e) => handleSubmit(e)}
                                     >
-                                        Save Changes
+                                        {title === 'Register' ? "Inregistrare" : "Conectare"}
                                     </button>
                                 </div>
                             </form>

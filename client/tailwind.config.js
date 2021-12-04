@@ -6,7 +6,8 @@ module.exports = {
             colors: {
                 primary: '#272A45',
                 gradient1: '#B3F3FF',
-                gradient2: '#AEC0FF'
+                gradient2: '#AEC0FF',
+                form_bg: '#DBDBDB'
             },
             backgroundImage: {
                 'hero': "url('Images/HeroArt.png')",
@@ -14,9 +15,14 @@ module.exports = {
                 'header-texture': "url('Images/HeaderWave.png')",
                 'logo': "url('./Images/Logo.png')",
                 'ic_stud': "url('./Images/Icon_Student.png')",
-                'ig': "url('./Images/Icon_Student.png')",
-                'fb': "url('./Images/Icon_Student.png')",
-                'tw': "url('./Images/Icon_Student.png')",
+                'sel_arrow': "url('./Images/Sel_Arrow.png')",
+            },
+            backgroundSize: {
+                'auto': 'auto',
+                'cover': 'cover',
+                'contain': 'contain',
+                'small': '15%',
+                '16': '4rem',
             },
             fontSize: {
                 heroTitle_desk: ['48px', '56.23px'],
